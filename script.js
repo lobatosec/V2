@@ -132,6 +132,44 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnClearFilters) btnClearFilters.addEventListener('click', resetAllFilters);
   if (btnResetEmpty) btnResetEmpty.addEventListener('click', resetAllFilters);
 
+  function filterByRegion(regionName) {
+    let targetVal = regionName || '';
+    if (/sudoeste/i.test(regionName)) {
+      targetVal = 'Quadra 500 · Sudoeste';
+    } else if (/noroeste/i.test(regionName)) {
+      targetVal = 'Noroeste';
+    } else if (/guar[aá]/i.test(regionName)) {
+      targetVal = 'Guará';
+    }
+
+    if (filterRegion) filterRegion.value = targetVal;
+    if (filterRooms) filterRooms.value = '';
+    if (filterStatus) filterStatus.value = '';
+
+    applyFilters();
+
+    const portfolioSec = document.getElementById('imoveis');
+    if (portfolioSec) {
+      portfolioSec.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Links que filtram diretamente por localidade (ex: botões no rodapé)
+  document.querySelectorAll('[data-filter-region]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const region = link.getAttribute('data-filter-region');
+      filterByRegion(region);
+    });
+  });
+
+  // Ao clicar em "Empreendimentos" na barra de navegação/dock/drawer, exibir todos os empreendimentos
+  document.querySelectorAll('.desktop-nav a[href="#imoveis"], .drawer-nav a[href="#imoveis"], .dock-item[href="#imoveis"]').forEach(navLink => {
+    navLink.addEventListener('click', () => {
+      resetAllFilters();
+    });
+  });
+
   // Quick Horizontal Pills
   pillBtns.forEach(pill => {
     pill.addEventListener('click', () => {
